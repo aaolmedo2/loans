@@ -23,5 +23,5 @@ public class PrestamoDTO {
     private BigDecimal plazoMaximoMeses;
     private String tipoAmortizacion;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

@@ -15,5 +15,5 @@ public class TiposComisionDTO {
     private String tipoCalculo;
     private BigDecimal monto;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

@@ -11,8 +11,6 @@ import com.banquito.core.loans.repositorio.GarantiaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +77,7 @@ public class GarantiaService {
             garantia.setDescripcion(garantiaDTO.getDescripcion());
             garantia.setValor(garantiaDTO.getValor());
             garantia.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
-            garantia.setVersion(new BigDecimal(1));
+            garantia.setVersion(1L);
 
             Garantia garantiaGuardada = this.garantiaRepository.save(garantia);
             return this.transformarADTO(garantiaGuardada);
@@ -115,12 +113,11 @@ public class GarantiaService {
                 garantia.setTipoGarantia(garantiaDTO.getTipoGarantia());
                 garantia.setDescripcion(garantiaDTO.getDescripcion());
                 garantia.setValor(garantiaDTO.getValor());
-
                 if (garantiaDTO.getEstado() != null) {
                     garantia.setEstado(garantiaDTO.getEstado());
                 }
 
-                BigDecimal newVersion = garantia.getVersion().add(new BigDecimal(1));
+                Long newVersion = garantia.getVersion() + 1L;
                 garantia.setVersion(newVersion);
 
                 Garantia garantiaActualizada = this.garantiaRepository.save(garantia);

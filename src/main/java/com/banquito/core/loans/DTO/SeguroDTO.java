@@ -16,5 +16,5 @@ public class SeguroDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

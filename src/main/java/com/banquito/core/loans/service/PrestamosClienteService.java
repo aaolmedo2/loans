@@ -12,8 +12,6 @@ import com.banquito.core.loans.repositorio.PrestamosClienteRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +83,7 @@ public class PrestamosClienteService {
             prestamoCliente.setPlazoMeses(prestamoClienteDTO.getPlazoMeses());
             prestamoCliente.setTasaInteresAplicada(prestamoClienteDTO.getTasaInteresAplicada());
             prestamoCliente.setEstado(EstadoPrestamoClienteEnum.SOLICITADO.getValor());
-            prestamoCliente.setVersion(new BigDecimal(1));
+            prestamoCliente.setVersion(1L);
 
             PrestamosCliente prestamoClienteGuardado = this.prestamosClienteRepository.save(prestamoCliente);
             return this.transformarADTO(prestamoClienteGuardado);
@@ -128,7 +126,7 @@ public class PrestamosClienteService {
                     prestamoCliente.setEstado(prestamoClienteDTO.getEstado());
                 }
 
-                BigDecimal newVersion = prestamoCliente.getVersion().add(new BigDecimal(1));
+                Long newVersion = prestamoCliente.getVersion() + 1L;
                 prestamoCliente.setVersion(newVersion);
 
                 PrestamosCliente prestamoClienteActualizado = this.prestamosClienteRepository.save(prestamoCliente);

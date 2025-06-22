@@ -20,5 +20,5 @@ public class PrestamosClienteDTO {
     private Integer plazoMeses;
     private BigDecimal tasaInteresAplicada;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

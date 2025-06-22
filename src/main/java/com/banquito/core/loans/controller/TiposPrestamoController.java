@@ -43,23 +43,6 @@ public class TiposPrestamoController {
         return ResponseEntity.ok(tiposPrestamos);
     }
 
-    @Operation(summary = "Buscar tipos de préstamos por nombre")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipos de préstamos encontrados", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = TiposPrestamoDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay tipos de préstamos con ese nombre", content = @Content)
-    })
-    @GetMapping("/nombre/{nombre}")
-    public ResponseEntity<List<TiposPrestamoDTO>> buscarPorNombre(
-            @Parameter(description = "Nombre del tipo de préstamo") @PathVariable String nombre) {
-        log.info("Buscando tipos de préstamos por nombre: {}", nombre);
-        List<TiposPrestamoDTO> tiposPrestamos = this.tiposPrestamoService.buscarPorNombre(nombre);
-        if (tiposPrestamos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(tiposPrestamos);
-    }
-
     @Operation(summary = "Obtener tipos de préstamos por estado")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tipos de préstamos encontrados", content = {
@@ -71,23 +54,6 @@ public class TiposPrestamoController {
             @Parameter(description = "Estado del tipo de préstamo") @PathVariable String estado) {
         log.info("Obteniendo tipos de préstamos por estado: {}", estado);
         List<TiposPrestamoDTO> tiposPrestamos = this.tiposPrestamoService.obtenerPorEstado(estado);
-        if (tiposPrestamos.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(tiposPrestamos);
-    }
-
-    @Operation(summary = "Obtener tipos de préstamos por tipo de cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipos de préstamos encontrados", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = TiposPrestamoDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay tipos de préstamos para ese tipo de cliente", content = @Content)
-    })
-    @GetMapping("/tipo-cliente/{tipoCliente}")
-    public ResponseEntity<List<TiposPrestamoDTO>> obtenerPorTipoCliente(
-            @Parameter(description = "Tipo de cliente") @PathVariable String tipoCliente) {
-        log.info("Obteniendo tipos de préstamos por tipo de cliente: {}", tipoCliente);
-        List<TiposPrestamoDTO> tiposPrestamos = this.tiposPrestamoService.obtenerPorTipoCliente(tipoCliente);
         if (tiposPrestamos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }

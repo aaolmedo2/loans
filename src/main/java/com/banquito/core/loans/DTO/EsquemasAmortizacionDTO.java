@@ -1,7 +1,5 @@
 package com.banquito.core.loans.DTO;
 
-import java.math.BigDecimal;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,5 +12,5 @@ public class EsquemasAmortizacionDTO {
     private String descripcion;
     private Boolean permiteGracia;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

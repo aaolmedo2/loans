@@ -12,8 +12,6 @@ import com.banquito.core.loans.repositorio.TiposComisioneRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +93,7 @@ public class TiposComisionService {
             tipoComision.setTipoCalculo(tipoComisionDTO.getTipoCalculo());
             tipoComision.setMonto(tipoComisionDTO.getMonto());
             tipoComision.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
-            tipoComision.setVersion(new BigDecimal(1));
+            tipoComision.setVersion(1L);
 
             TiposComisione tipoComisionGuardado = this.tipoComisionRepository.save(tipoComision);
             return this.transformarADTO(tipoComisionGuardado);
@@ -148,12 +146,11 @@ public class TiposComisionService {
                 tipoComision.setDescripcion(tipoComisionDTO.getDescripcion());
                 tipoComision.setTipoCalculo(tipoComisionDTO.getTipoCalculo());
                 tipoComision.setMonto(tipoComisionDTO.getMonto());
-
                 if (tipoComisionDTO.getEstado() != null) {
                     tipoComision.setEstado(tipoComisionDTO.getEstado());
                 }
 
-                BigDecimal newVersion = tipoComision.getVersion().add(new BigDecimal(1));
+                Long newVersion = tipoComision.getVersion() + 1L;
                 tipoComision.setVersion(newVersion);
 
                 TiposComisione tipoComisionActualizado = this.tipoComisionRepository.save(tipoComision);

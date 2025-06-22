@@ -13,5 +13,5 @@ public class GarantiaDTO {
     private String descripcion;
     private BigDecimal valor;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }

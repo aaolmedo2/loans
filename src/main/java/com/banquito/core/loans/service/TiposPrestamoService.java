@@ -11,8 +11,6 @@ import com.banquito.core.loans.repositorio.TiposPrestamoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +82,7 @@ public class TiposPrestamoService {
             tipoPrestamo.setFechaCreacion(Instant.now());
             tipoPrestamo.setFechaModificacion(Instant.now());
             tipoPrestamo.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
-            tipoPrestamo.setVersion(new BigDecimal(1));
+            tipoPrestamo.setVersion(1L);
 
             TiposPrestamo tipoPrestamoGuardado = this.tiposPrestamoRepository.save(tipoPrestamo);
             return this.transformarADTO(tipoPrestamoGuardado);
@@ -123,12 +121,11 @@ public class TiposPrestamoService {
                 tipoPrestamo.setRequisitos(tipoPrestamoDTO.getRequisitos());
                 tipoPrestamo.setTipoCliente(tipoPrestamoDTO.getTipoCliente());
                 tipoPrestamo.setFechaModificacion(Instant.now());
-
                 if (tipoPrestamoDTO.getEstado() != null) {
                     tipoPrestamo.setEstado(tipoPrestamoDTO.getEstado());
                 }
 
-                BigDecimal newVersion = tipoPrestamo.getVersion().add(new BigDecimal(1));
+                Long newVersion = tipoPrestamo.getVersion() + 1L;
                 tipoPrestamo.setVersion(newVersion);
 
                 TiposPrestamo tipoPrestamoActualizado = this.tiposPrestamoRepository.save(tipoPrestamo);

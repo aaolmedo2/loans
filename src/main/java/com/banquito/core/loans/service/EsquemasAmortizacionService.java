@@ -13,8 +13,6 @@ import com.banquito.core.loans.repositorio.TiposPrestamoRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -100,7 +98,7 @@ public class EsquemasAmortizacionService {
             esquema.setDescripcion(esquemaDTO.getDescripcion());
             esquema.setPermiteGracia(esquemaDTO.getPermiteGracia());
             esquema.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
-            esquema.setVersion(new BigDecimal(1));
+            esquema.setVersion(1L);
 
             EsquemasAmortizacion esquemaGuardado = this.esquemaRepository.save(esquema);
             return this.transformarADTO(esquemaGuardado);
@@ -153,12 +151,11 @@ public class EsquemasAmortizacionService {
                 esquema.setNombre(esquemaDTO.getNombre());
                 esquema.setDescripcion(esquemaDTO.getDescripcion());
                 esquema.setPermiteGracia(esquemaDTO.getPermiteGracia());
-
                 if (esquemaDTO.getEstado() != null) {
                     esquema.setEstado(esquemaDTO.getEstado());
                 }
 
-                BigDecimal newVersion = esquema.getVersion().add(new BigDecimal(1));
+                Long newVersion = esquema.getVersion() + 1L;
                 esquema.setVersion(newVersion);
 
                 EsquemasAmortizacion esquemaActualizado = this.esquemaRepository.save(esquema);

@@ -11,8 +11,6 @@ import com.banquito.core.loans.repositorio.SeguroRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -81,7 +79,7 @@ public class SeguroService {
             seguro.setFechaInicio(seguroDTO.getFechaInicio());
             seguro.setFechaFin(seguroDTO.getFechaFin());
             seguro.setEstado(EstadoSeguroEnum.ACTIVO.name());
-            seguro.setVersion(new BigDecimal(1));
+            seguro.setVersion(1L);
 
             Seguro seguroGuardado = this.seguroRepository.save(seguro);
             return this.transformarADTO(seguroGuardado);
@@ -119,12 +117,11 @@ public class SeguroService {
                 seguro.setMontoAsegurado(seguroDTO.getMontoAsegurado());
                 seguro.setFechaInicio(seguroDTO.getFechaInicio());
                 seguro.setFechaFin(seguroDTO.getFechaFin());
-
                 if (seguroDTO.getEstado() != null) {
                     seguro.setEstado(seguroDTO.getEstado());
                 }
 
-                BigDecimal newVersion = seguro.getVersion().add(new BigDecimal(1));
+                Long newVersion = seguro.getVersion() + 1L;
                 seguro.setVersion(newVersion);
 
                 Seguro seguroActualizado = this.seguroRepository.save(seguro);

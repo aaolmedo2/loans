@@ -2,8 +2,6 @@ package com.banquito.core.loans.DTO;
 
 import lombok.Builder;
 import lombok.Data;
-
-import java.math.BigDecimal;
 import java.time.Instant;
 
 @Data
@@ -18,5 +16,5 @@ public class TiposPrestamoDTO {
     private Instant fechaCreacion;
     private Instant fechaModificacion;
     private String estado;
-    private BigDecimal version;
+    private Long version;
 }
