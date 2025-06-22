@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class Prestamo {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "id_tipo_prestamo", nullable = false)
-    private com.banquito.core.loans.model.TiposPrestamo idTipoPrestamo;
+    private com.banquito.core.loans.modelo.TiposPrestamo idTipoPrestamo;
 
     @Column(name = "id_moneda", nullable = false, length = 3)
     private String idMoneda;
@@ -70,9 +70,9 @@ public class Prestamo {
     private BigDecimal version;
 
     @OneToMany(mappedBy = "idPrestamo")
-    private Set<com.banquito.core.loans.model.PrestamosCliente> prestamosClientes = new LinkedHashSet<>();
+    private Set<com.banquito.core.loans.modelo.PrestamosCliente> prestamosClientes = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idPrestamo")
-    private Set<com.banquito.core.loans.model.SegurosPrestamo> segurosPrestamos = new LinkedHashSet<>();
+    private Set<com.banquito.core.loans.modelo.SegurosPrestamo> segurosPrestamos = new LinkedHashSet<>();
 
 }

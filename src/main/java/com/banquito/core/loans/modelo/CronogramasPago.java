@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,7 +26,7 @@ public class CronogramasPago {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "id_prestamo_cliente", nullable = false)
-    private com.banquito.core.loans.model.PrestamosCliente idPrestamoCliente;
+    private com.banquito.core.loans.modelo.PrestamosCliente idPrestamoCliente;
 
     @Column(name = "numero_cuota", nullable = false)
     private Integer numeroCuota;
@@ -62,6 +62,6 @@ public class CronogramasPago {
     private BigDecimal version;
 
     @OneToMany(mappedBy = "idCuota")
-    private Set<com.banquito.core.loans.model.PagosPrestamo> pagosPrestamos = new LinkedHashSet<>();
+    private Set<com.banquito.core.loans.modelo.PagosPrestamo> pagosPrestamos = new LinkedHashSet<>();
 
 }

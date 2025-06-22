@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -8,16 +8,17 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "seguros_prestamo_cliente", schema = "loans")
-public class SegurosPrestamoCliente {
+@Table(name = "comisiones_prestamo_cliente", schema = "loans")
+public class ComisionesPrestamoCliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ColumnDefault("nextval('loans.seguros_prestamo_cliente_id_seguro_prestamo_cliente_seq')")
-    @Column(name = "id_seguro_prestamo_cliente", nullable = false)
+    @ColumnDefault("nextval('loans.comisiones_prestamo_cliente_id_comision_cliente_seq')")
+    @Column(name = "id_comision_cliente", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -27,19 +28,20 @@ public class SegurosPrestamoCliente {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "id_seguro_prestamo", nullable = false)
-    private com.banquito.core.loans.model.SegurosPrestamo idSeguroPrestamo;
+    @JoinColumn(name = "id_comision_prestamo", nullable = false)
+    private com.banquito.core.loans.modelo.ComisionesPrestamo idComisionPrestamo;
 
-    @Column(name = "monto_total", nullable = false, precision = 15, scale = 2)
-    private BigDecimal montoTotal;
+    @Column(name = "fecha_aplicacion", nullable = false)
+    private LocalDate fechaAplicacion;
 
-    @Column(name = "monto_cuota", nullable = false, precision = 15, scale = 2)
-    private BigDecimal montoCuota;
+    @Column(name = "monto", nullable = false, precision = 15, scale = 2)
+    private BigDecimal monto;
 
-    @ColumnDefault("'ACTIVO'")
+    @ColumnDefault("'PENDIENTE'")
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
+    @ColumnDefault("1")
     @Column(name = "version", nullable = false, precision = 9)
     private BigDecimal version;
 

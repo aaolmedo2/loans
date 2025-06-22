@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "esquemas_amortizacion", schema = "loans", uniqueConstraints = {
-        @UniqueConstraint(name = "ak_unique_nombre_esquema", columnNames = {"nombre"})
+        @UniqueConstraint(name = "ak_unique_nombre_esquema", columnNames = { "nombre" })
 })
 public class EsquemasAmortizacion {
     @Id
@@ -25,7 +25,7 @@ public class EsquemasAmortizacion {
     @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "id_tipo_prestamo")
-    private com.banquito.core.loans.model.TiposPrestamo idTipoPrestamo;
+    private com.banquito.core.loans.modelo.TiposPrestamo idTipoPrestamo;
 
     @Column(name = "nombre", nullable = false, length = 20)
     private String nombre;
