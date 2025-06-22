@@ -1,7 +1,7 @@
 # LOANS MODULE 💵
 
 ## MODEL
-![Descripción de la imagen](src\main\resources\static\loans-schema.jpg)
+![Descripción de la imagen](src/main/resources/static/loans-schema.jpg)
 
 ## TABLES(in order)
 - EsquemasAmortizacion
@@ -50,7 +50,7 @@
 ## CONSTRAINT OF LOANS
 
 | TABLE                         | ATTRIBUTE        | CONSTRAINT                                                                                       | ENUM                        |
-|:------------------------------|:------------------|:--------------------------------------------------------------------------------------------------|:-----------------------------|
+|:------------------------------|:------------------|:------------------------------------------------------------------------------------------------------|:-----------------------------|
 | comisiones_prestamo_cliente   | `estado`          | ▫️ 'PENDIENTE'<br>▫️ 'CANCELADA'<br>▫️ 'EXENTA'                                                   | EstadoComisionClienteEnum   |
 | comisiones_prestamos          | `estado`          | ▫️ 'ACTIVO'<br>▫️ 'INACTIVO'                                                                      | EstadoGeneralEnum           |
 | tipos_comisiones              | `tipo`            | ▫️ 'ORIGINACION'<br>▫️ 'PAGO ATRASADO'<br>▫️ 'PREPAGO'<br>▫️ 'MODIFICACION'<br>▫️ 'SERVICIO ADICIONAL' | TipoComisionEnum            |
