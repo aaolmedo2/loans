@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class GarantiasTiposPrestamosCliente {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
     @JoinColumn(name = "id_prestamo_cliente", nullable = false)
-    private com.banquito.core.loans.model.PrestamosCliente idPrestamoCliente;
+    private com.banquito.core.loans.modelo.PrestamosCliente idPrestamoCliente;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)

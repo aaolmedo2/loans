@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,31 +14,33 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(name = "seguros_prestamos", schema = "loans")
-public class SegurosPrestamo {
+@Table(name = "garantias_tipos_prestamos", schema = "loans")
+public class GarantiasTiposPrestamo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @ColumnDefault("nextval('loans.seguros_prestamos_id_seguro_prestamo_seq')")
-    @Column(name = "id_seguro_prestamo", nullable = false)
+    @ColumnDefault("nextval('loans.garantias_tipos_prestamos_id_garantia_tipo_prestamo_seq')")
+    @Column(name = "id_garantia_tipo_prestamo", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "id_seguro", nullable = false)
-    private Seguro idSeguro;
+    @JoinColumn(name = "id_garantia", nullable = false)
+    private Garantia idGarantia;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.RESTRICT)
-    @JoinColumn(name = "id_prestamo", nullable = false)
-    private Prestamo idPrestamo;
+    @JoinColumn(name = "id_tipo_prestamo", nullable = false)
+    private com.banquito.core.loans.modelo.TiposPrestamo idTipoPrestamo;
 
+    @ColumnDefault("'ACTIVO'")
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
+    @ColumnDefault("0")
     @Column(name = "version", nullable = false, precision = 9)
     private BigDecimal version;
 
-    @OneToMany(mappedBy = "idSeguroPrestamo")
-    private Set<SegurosPrestamoCliente> segurosPrestamoClientes = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "idGarantiaTipoPrestamo")
+    private Set<com.banquito.core.loans.modelo.GarantiasTiposPrestamosCliente> garantiasTiposPrestamosClientes = new LinkedHashSet<>();
 
 }

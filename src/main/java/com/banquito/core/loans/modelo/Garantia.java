@@ -1,4 +1,4 @@
-package com.banquito.core.loans.model;
+package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -36,6 +36,6 @@ public class Garantia {
     private BigDecimal version;
 
     @OneToMany(mappedBy = "idGarantia")
-    private Set<com.banquito.core.loans.model.GarantiasTiposPrestamo> garantiasTiposPrestamos = new LinkedHashSet<>();
+    private Set<com.banquito.core.loans.modelo.GarantiasTiposPrestamo> garantiasTiposPrestamos = new LinkedHashSet<>();
 
 }
