@@ -1,18 +1,13 @@
 package com.banquito.core.loans.modelo;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
-import java.math.BigDecimal;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "seguros_prestamos", schema = "loans")
 public class SegurosPrestamo {
@@ -35,10 +30,97 @@ public class SegurosPrestamo {
     @Column(name = "estado", nullable = false, length = 15)
     private String estado;
 
+    @Version
     @Column(name = "version", nullable = false, precision = 9)
-    private BigDecimal version;
+    private Long version;
 
     @OneToMany(mappedBy = "idSeguroPrestamo")
     private Set<SegurosPrestamoCliente> segurosPrestamoClientes = new LinkedHashSet<>();
+
+    public SegurosPrestamo() {
+    }
+
+    public SegurosPrestamo(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Seguro getIdSeguro() {
+        return idSeguro;
+    }
+
+    public void setIdSeguro(Seguro idSeguro) {
+        this.idSeguro = idSeguro;
+    }
+
+    public Prestamo getIdPrestamo() {
+        return idPrestamo;
+    }
+
+    public void setIdPrestamo(Prestamo idPrestamo) {
+        this.idPrestamo = idPrestamo;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public Set<SegurosPrestamoCliente> getSegurosPrestamoClientes() {
+        return segurosPrestamoClientes;
+    }
+
+    public void setSegurosPrestamoClientes(Set<SegurosPrestamoCliente> segurosPrestamoClientes) {
+        this.segurosPrestamoClientes = segurosPrestamoClientes;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SegurosPrestamo other = (SegurosPrestamo) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "SegurosPrestamo [id=" + id + ", idSeguro=" + idSeguro + ", idPrestamo=" + idPrestamo + ", estado="
+                + estado + ", version=" + version + ", segurosPrestamoClientes=" + segurosPrestamoClientes + "]";
+    }
 
 }
