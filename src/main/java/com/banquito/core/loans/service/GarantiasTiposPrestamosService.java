@@ -2,6 +2,7 @@ package com.banquito.core.loans.service;
 
 import com.banquito.core.loans.DTO.GarantiasTiposPrestamoDTO;
 import com.banquito.core.loans.DTO.GarantiasTiposPrestamosClienteDTO;
+import com.banquito.core.loans.enums.EstadoGeneralEnum;
 import com.banquito.core.loans.exception.CreateException;
 import com.banquito.core.loans.exception.EntityNotFoundException;
 import com.banquito.core.loans.exception.UpdateException;
@@ -70,13 +71,16 @@ public class GarantiasTiposPrestamosService {
         log.info("Creando nueva relación garantía-tipo préstamo: {}", dto);
         try {
             Garantia garantia = garantiaRepository.findById(dto.getIdGarantia())
-                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo", "No existe la garantía con id: " + dto.getIdGarantia()));
+                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo",
+                            "No existe la garantía con id: " + dto.getIdGarantia()));
             TiposPrestamo tipoPrestamo = tiposPrestamoRepository.findById(dto.getIdTipoPrestamo())
-                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo", "No existe el tipo de préstamo con id: " + dto.getIdTipoPrestamo()));
+                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo",
+                            "No existe el tipo de préstamo con id: " + dto.getIdTipoPrestamo()));
             GarantiasTiposPrestamo entity = new GarantiasTiposPrestamo();
             entity.setIdGarantia(garantia);
             entity.setIdTipoPrestamo(tipoPrestamo);
-            entity.setEstado(dto.getEstado());
+            entity.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
+            // entity.setEstado(dto.getEstado());
             entity.setVersion(1L);
             GarantiasTiposPrestamo guardado = garantiasTiposPrestamoRepositorio.save(entity);
             return this.transformarADTO(guardado);
@@ -87,41 +91,13 @@ public class GarantiasTiposPrestamosService {
     }
 
     @Transactional
-    public GarantiasTiposPrestamoDTO actualizarTipo(Integer id, GarantiasTiposPrestamoDTO dto) {
-        log.info("Actualizando relación garantía-tipo préstamo con ID: {}", id);
-        try {
-            GarantiasTiposPrestamo entity = garantiasTiposPrestamoRepositorio.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo", "No se encontró la relación con id: " + id));
-            if (!entity.getIdGarantia().getId().equals(dto.getIdGarantia())) {
-                Garantia garantia = garantiaRepository.findById(dto.getIdGarantia())
-                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo", "No existe la garantía con id: " + dto.getIdGarantia()));
-                entity.setIdGarantia(garantia);
-            }
-            if (!entity.getIdTipoPrestamo().getId().equals(dto.getIdTipoPrestamo())) {
-                TiposPrestamo tipoPrestamo = tiposPrestamoRepository.findById(dto.getIdTipoPrestamo())
-                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo", "No existe el tipo de préstamo con id: " + dto.getIdTipoPrestamo()));
-                entity.setIdTipoPrestamo(tipoPrestamo);
-            }
-            if (dto.getEstado() != null) {
-                entity.setEstado(dto.getEstado());
-            }
-            entity.setVersion(entity.getVersion() + 1L);
-            GarantiasTiposPrestamo actualizado = garantiasTiposPrestamoRepositorio.save(entity);
-            return this.transformarADTO(actualizado);
-        } catch (EntityNotFoundException | UpdateException e) {
-            throw e;
-        } catch (Exception e) {
-            log.error("Error al actualizar la relación garantía-tipo préstamo", e);
-            throw new UpdateException("Garantía-Tipo Préstamo", "Error al actualizar: " + e.getMessage());
-        }
-    }
-
-    @Transactional
     public void eliminarTipo(Integer id) {
         log.info("Eliminando (soft) relación garantía-tipo préstamo con ID: {}", id);
         GarantiasTiposPrestamo entity = garantiasTiposPrestamoRepositorio.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo", "No se encontró la relación con id: " + id));
-        entity.setEstado("INACTIVO");
+                .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo",
+                        "No se encontró la relación con id: " + id));
+        // entity.setEstado("INACTIVO");
+        entity.setEstado(EstadoGeneralEnum.INACTIVO.getValor());
         garantiasTiposPrestamoRepositorio.save(entity);
     }
 
@@ -142,7 +118,8 @@ public class GarantiasTiposPrestamosService {
         if (opt.isPresent()) {
             return this.transformarClienteADTO(opt.get());
         } else {
-            throw new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente", "No se encontró la relación con id: " + id);
+            throw new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente",
+                    "No se encontró la relación con id: " + id);
         }
     }
 
@@ -151,9 +128,12 @@ public class GarantiasTiposPrestamosService {
         log.info("Creando nueva relación garantía-tipo préstamo-cliente: {}", dto);
         try {
             PrestamosCliente prestamoCliente = prestamosClienteRepository.findById(dto.getIdPrestamoCliente())
-                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo-Cliente", "No existe el préstamo cliente con id: " + dto.getIdPrestamoCliente()));
-            GarantiasTiposPrestamo garantiaTipo = garantiasTiposPrestamoRepositorio.findById(dto.getIdGarantiaTipoPrestamo())
-                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo-Cliente", "No existe la relación garantía-tipo préstamo con id: " + dto.getIdGarantiaTipoPrestamo()));
+                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo-Cliente",
+                            "No existe el préstamo cliente con id: " + dto.getIdPrestamoCliente()));
+            GarantiasTiposPrestamo garantiaTipo = garantiasTiposPrestamoRepositorio
+                    .findById(dto.getIdGarantiaTipoPrestamo())
+                    .orElseThrow(() -> new CreateException("Garantía-Tipo Préstamo-Cliente",
+                            "No existe la relación garantía-tipo préstamo con id: " + dto.getIdGarantiaTipoPrestamo()));
             GarantiasTiposPrestamosCliente entity = new GarantiasTiposPrestamosCliente();
             entity.setIdPrestamoCliente(prestamoCliente);
             entity.setIdGarantiaTipoPrestamo(garantiaTipo);
@@ -161,7 +141,8 @@ public class GarantiasTiposPrestamosService {
             entity.setFechaRegistro(dto.getFechaRegistro());
             entity.setDescripcion(dto.getDescripcion());
             entity.setDocumentoReferencia(dto.getDocumentoReferencia());
-            entity.setEstado(dto.getEstado());
+            // entity.setEstado(dto.getEstado());
+            entity.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
             entity.setVersion(1L);
             GarantiasTiposPrestamosCliente guardado = garantiasTiposPrestamosClienteRepositorio.save(entity);
             return this.transformarClienteADTO(guardado);
@@ -176,15 +157,20 @@ public class GarantiasTiposPrestamosService {
         log.info("Actualizando relación garantía-tipo préstamo-cliente con ID: {}", id);
         try {
             GarantiasTiposPrestamosCliente entity = garantiasTiposPrestamosClienteRepositorio.findById(id)
-                    .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente", "No se encontró la relación con id: " + id));
+                    .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente",
+                            "No se encontró la relación con id: " + id));
             if (!entity.getIdPrestamoCliente().getId().equals(dto.getIdPrestamoCliente())) {
                 PrestamosCliente prestamoCliente = prestamosClienteRepository.findById(dto.getIdPrestamoCliente())
-                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo-Cliente", "No existe el préstamo cliente con id: " + dto.getIdPrestamoCliente()));
+                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo-Cliente",
+                                "No existe el préstamo cliente con id: " + dto.getIdPrestamoCliente()));
                 entity.setIdPrestamoCliente(prestamoCliente);
             }
             if (!entity.getIdGarantiaTipoPrestamo().getId().equals(dto.getIdGarantiaTipoPrestamo())) {
-                GarantiasTiposPrestamo garantiaTipo = garantiasTiposPrestamoRepositorio.findById(dto.getIdGarantiaTipoPrestamo())
-                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo-Cliente", "No existe la relación garantía-tipo préstamo con id: " + dto.getIdGarantiaTipoPrestamo()));
+                GarantiasTiposPrestamo garantiaTipo = garantiasTiposPrestamoRepositorio
+                        .findById(dto.getIdGarantiaTipoPrestamo())
+                        .orElseThrow(() -> new UpdateException("Garantía-Tipo Préstamo-Cliente",
+                                "No existe la relación garantía-tipo préstamo con id: "
+                                        + dto.getIdGarantiaTipoPrestamo()));
                 entity.setIdGarantiaTipoPrestamo(garantiaTipo);
             }
             entity.setMontoTasado(dto.getMontoTasado());
@@ -209,8 +195,10 @@ public class GarantiasTiposPrestamosService {
     public void eliminarCliente(Integer id) {
         log.info("Eliminando (soft) relación garantía-tipo préstamo-cliente con ID: {}", id);
         GarantiasTiposPrestamosCliente entity = garantiasTiposPrestamosClienteRepositorio.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente", "No se encontró la relación con id: " + id));
-        entity.setEstado("INACTIVO");
+                .orElseThrow(() -> new EntityNotFoundException("Garantía-Tipo Préstamo-Cliente",
+                        "No se encontró la relación con id: " + id));
+        // entity.setEstado("INACTIVO");
+        entity.setEstado(EstadoGeneralEnum.INACTIVO.getValor());
         garantiasTiposPrestamosClienteRepositorio.save(entity);
     }
 
@@ -238,4 +226,4 @@ public class GarantiasTiposPrestamosService {
                 .version(entity.getVersion())
                 .build();
     }
-} 
+}

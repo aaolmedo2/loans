@@ -4,11 +4,6 @@ import com.banquito.core.loans.DTO.GarantiasTiposPrestamoDTO;
 import com.banquito.core.loans.DTO.GarantiasTiposPrestamosClienteDTO;
 import com.banquito.core.loans.service.GarantiasTiposPrestamosService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +27,8 @@ public class GarantiasTiposPrestamosController {
     public ResponseEntity<List<GarantiasTiposPrestamoDTO>> obtenerTodosTipos() {
         log.info("Obteniendo todas las relaciones garantía-tipo préstamo");
         List<GarantiasTiposPrestamoDTO> lista = service.obtenerTodosTipos();
-        if (lista.isEmpty()) return ResponseEntity.noContent().build();
+        if (lista.isEmpty())
+            return ResponseEntity.noContent().build();
         return ResponseEntity.ok(lista);
     }
 
@@ -50,13 +46,6 @@ public class GarantiasTiposPrestamosController {
         return ResponseEntity.ok(service.crearTipo(dto));
     }
 
-    @Operation(summary = "Actualizar relación garantía-tipo préstamo")
-    @PutMapping("/{id}")
-    public ResponseEntity<GarantiasTiposPrestamoDTO> actualizarTipo(@PathVariable Integer id, @RequestBody GarantiasTiposPrestamoDTO dto) {
-        log.info("Actualizando relación garantía-tipo préstamo con ID: {}", id);
-        return ResponseEntity.ok(service.actualizarTipo(id, dto));
-    }
-
     @Operation(summary = "Eliminar (soft) relación garantía-tipo préstamo")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarTipo(@PathVariable Integer id) {
@@ -71,7 +60,8 @@ public class GarantiasTiposPrestamosController {
     public ResponseEntity<List<GarantiasTiposPrestamosClienteDTO>> obtenerTodosClientes() {
         log.info("Obteniendo todas las relaciones garantía-tipo préstamo-cliente");
         List<GarantiasTiposPrestamosClienteDTO> lista = service.obtenerTodosClientes();
-        if (lista.isEmpty()) return ResponseEntity.noContent().build();
+        if (lista.isEmpty())
+            return ResponseEntity.noContent().build();
         return ResponseEntity.ok(lista);
     }
 
@@ -84,14 +74,16 @@ public class GarantiasTiposPrestamosController {
 
     @Operation(summary = "Crear nueva relación garantía-tipo préstamo-cliente")
     @PostMapping("/clientes")
-    public ResponseEntity<GarantiasTiposPrestamosClienteDTO> crearCliente(@RequestBody GarantiasTiposPrestamosClienteDTO dto) {
+    public ResponseEntity<GarantiasTiposPrestamosClienteDTO> crearCliente(
+            @RequestBody GarantiasTiposPrestamosClienteDTO dto) {
         log.info("Creando nueva relación garantía-tipo préstamo-cliente: {}", dto);
         return ResponseEntity.ok(service.crearCliente(dto));
     }
 
     @Operation(summary = "Actualizar relación garantía-tipo préstamo-cliente")
     @PutMapping("/clientes/{id}")
-    public ResponseEntity<GarantiasTiposPrestamosClienteDTO> actualizarCliente(@PathVariable Integer id, @RequestBody GarantiasTiposPrestamosClienteDTO dto) {
+    public ResponseEntity<GarantiasTiposPrestamosClienteDTO> actualizarCliente(@PathVariable Integer id,
+            @RequestBody GarantiasTiposPrestamosClienteDTO dto) {
         log.info("Actualizando relación garantía-tipo préstamo-cliente con ID: {}", id);
         return ResponseEntity.ok(service.actualizarCliente(id, dto));
     }
@@ -103,4 +95,4 @@ public class GarantiasTiposPrestamosController {
         service.eliminarCliente(id);
         return ResponseEntity.noContent().build();
     }
-} 
+}
