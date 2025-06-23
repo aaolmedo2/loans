@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TiposPrestamoRepository extends JpaRepository<TiposPrestamo, Integer> {
+public interface TiposPrestamoRepositorio extends JpaRepository<TiposPrestamo, Integer> {
     List<TiposPrestamo> findByNombreContainingIgnoreCase(String nombre);
 
     List<TiposPrestamo> findByEstado(String estado);

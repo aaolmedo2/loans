@@ -7,7 +7,7 @@ import com.banquito.core.loans.exception.CreateException;
 import com.banquito.core.loans.exception.EntityNotFoundException;
 import com.banquito.core.loans.exception.UpdateException;
 import com.banquito.core.loans.modelo.Garantia;
-import com.banquito.core.loans.repositorio.GarantiaRepository;
+import com.banquito.core.loans.repositorio.GarantiaRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,25 +19,15 @@ import java.util.Optional;
 @Slf4j
 public class GarantiaService {
 
-    private final GarantiaRepository garantiaRepository;
+    private final GarantiaRepositorio garantiaRepository;
 
-    public GarantiaService(GarantiaRepository garantiaRepository) {
+    public GarantiaService(GarantiaRepositorio garantiaRepository) {
         this.garantiaRepository = garantiaRepository;
     }
 
     public List<GarantiaDTO> obtenerTodas() {
         log.info("Obteniendo todas las garantías");
         List<Garantia> garantias = this.garantiaRepository.findAll();
-        List<GarantiaDTO> garantiasDTO = new ArrayList<>();
-        for (Garantia garantia : garantias) {
-            garantiasDTO.add(this.transformarADTO(garantia));
-        }
-        return garantiasDTO;
-    }
-
-    public List<GarantiaDTO> obtenerPorEstado(String estado) {
-        log.info("Obteniendo garantías por estado: {}", estado);
-        List<Garantia> garantias = this.garantiaRepository.findByEstado(estado);
         List<GarantiaDTO> garantiasDTO = new ArrayList<>();
         for (Garantia garantia : garantias) {
             garantiasDTO.add(this.transformarADTO(garantia));

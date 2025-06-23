@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TiposComisioneRepository extends JpaRepository<TiposComisione, Integer> {
+public interface TiposComisioneRepositorio extends JpaRepository<TiposComisione, Integer> {
     List<TiposComisione> findByTipo(String tipo);
 
     List<TiposComisione> findByEstado(String estado);

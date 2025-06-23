@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PrestamosClienteRepository extends JpaRepository<PrestamosCliente, Integer> {
+public interface PrestamosClienteRepositorio extends JpaRepository<PrestamosCliente, Integer> {
     List<PrestamosCliente> findByIdCliente(Integer idCliente);
 
     List<PrestamosCliente> findByIdPrestamo_Id(Integer idPrestamo);

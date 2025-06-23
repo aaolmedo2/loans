@@ -1,16 +1,22 @@
 package com.banquito.core.loans.service;
 
+import com.banquito.core.loans.DTO.ComisionesPrestamoDTO;
 import com.banquito.core.loans.DTO.PrestamoDTO;
 import com.banquito.core.loans.enums.BaseCalculoEnum;
 import com.banquito.core.loans.enums.EsquemaAmortizacionEnum;
+import com.banquito.core.loans.enums.EstadoGeneralEnum;
 import com.banquito.core.loans.enums.EstadoPrestamoEnum;
 import com.banquito.core.loans.exception.CreateException;
 import com.banquito.core.loans.exception.EntityNotFoundException;
 import com.banquito.core.loans.exception.UpdateException;
+import com.banquito.core.loans.modelo.ComisionesPrestamo;
 import com.banquito.core.loans.modelo.Prestamo;
+import com.banquito.core.loans.modelo.TiposComisione;
 import com.banquito.core.loans.modelo.TiposPrestamo;
-import com.banquito.core.loans.repositorio.PrestamoRepository;
-import com.banquito.core.loans.repositorio.TiposPrestamoRepository;
+import com.banquito.core.loans.repositorio.ComisionesPrestamoRepositorio;
+import com.banquito.core.loans.repositorio.PrestamoRepositorio;
+import com.banquito.core.loans.repositorio.TiposComisioneRepositorio;
+import com.banquito.core.loans.repositorio.TiposPrestamoRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +29,17 @@ import java.util.Optional;
 @Slf4j
 public class PrestamoService {
 
-    private final PrestamoRepository prestamoRepository;
-    private final TiposPrestamoRepository tiposPrestamoRepository;
+    private final PrestamoRepositorio prestamoRepository;
+    private final TiposPrestamoRepositorio tiposPrestamoRepository;
+    private final ComisionesPrestamoRepositorio comisionesPrestamoRepositorio;
+    private final TiposComisioneRepositorio tiposComisioneRepository;
 
-    public PrestamoService(PrestamoRepository prestamoRepository,
-            TiposPrestamoRepository tiposPrestamoRepository) {
+    public PrestamoService(PrestamoRepositorio prestamoRepository,
+            TiposPrestamoRepositorio tiposPrestamoRepository,
+            ComisionesPrestamoRepositorio comisionesPrestamoRepositorio,
+            TiposComisioneRepositorio tiposComisioneRepository) {
+        this.comisionesPrestamoRepositorio = comisionesPrestamoRepositorio;
+        this.tiposComisioneRepository = tiposComisioneRepository;
         this.prestamoRepository = prestamoRepository;
         this.tiposPrestamoRepository = tiposPrestamoRepository;
     }
@@ -35,26 +47,6 @@ public class PrestamoService {
     public List<PrestamoDTO> obtenerTodos() {
         log.info("Obteniendo todos los préstamos");
         List<Prestamo> prestamos = this.prestamoRepository.findAll();
-        List<PrestamoDTO> prestamosDTO = new ArrayList<>();
-        for (Prestamo prestamo : prestamos) {
-            prestamosDTO.add(this.transformarADTO(prestamo));
-        }
-        return prestamosDTO;
-    }
-
-    public List<PrestamoDTO> buscarPorNombre(String nombre) {
-        log.info("Buscando préstamos por nombre: {}", nombre);
-        List<Prestamo> prestamos = this.prestamoRepository.findByNombreContainingIgnoreCase(nombre);
-        List<PrestamoDTO> prestamosDTO = new ArrayList<>();
-        for (Prestamo prestamo : prestamos) {
-            prestamosDTO.add(this.transformarADTO(prestamo));
-        }
-        return prestamosDTO;
-    }
-
-    public List<PrestamoDTO> obtenerPorEstado(String estado) {
-        log.info("Obteniendo préstamos por estado: {}", estado);
-        List<Prestamo> prestamos = this.prestamoRepository.findByEstado(estado);
         List<PrestamoDTO> prestamosDTO = new ArrayList<>();
         for (Prestamo prestamo : prestamos) {
             prestamosDTO.add(this.transformarADTO(prestamo));
@@ -237,6 +229,45 @@ public class PrestamoService {
         }
     }
 
+    // comisiones-prestamo
+    @Transactional
+    public ComisionesPrestamoDTO crearComisionPrestamo(ComisionesPrestamoDTO comisionesPrestamoDTO) {
+        log.info("Creando nueva comisión de préstamo: {}", comisionesPrestamoDTO);
+        try {
+            // Validar que el tipo de comisión exista
+            Optional<TiposComisione> tipoComisionOpt = this.tiposComisioneRepository
+                    .findById(comisionesPrestamoDTO.getIdTipoComision());
+            if (!tipoComisionOpt.isPresent()) {
+                throw new CreateException("Comisión de Préstamo",
+                        "No existe el tipo de comisión con id: " + comisionesPrestamoDTO.getIdTipoComision());
+            }
+
+            // Validar que el préstamo exista
+            Optional<Prestamo> prestamoOpt = this.prestamoRepository
+                    .findById(comisionesPrestamoDTO.getIdPrestamo());
+            if (!prestamoOpt.isPresent()) {
+                throw new CreateException("Comisión de Préstamo",
+                        "No existe el préstamo con id: " + comisionesPrestamoDTO.getIdPrestamo());
+            }
+
+            TiposComisione tipoComision = tipoComisionOpt.get();
+            Prestamo prestamo = prestamoOpt.get();
+
+            ComisionesPrestamo comisionesPrestamo = new ComisionesPrestamo();
+            comisionesPrestamo.setIdTipoComision(tipoComision);
+            comisionesPrestamo.setIdPrestamo(prestamo);
+            comisionesPrestamo.setEstado(EstadoGeneralEnum.ACTIVO.getValor());
+            comisionesPrestamo.setVersion(1L);
+
+            ComisionesPrestamo comisionGuardada = this.comisionesPrestamoRepositorio.save(comisionesPrestamo);
+            return this.transformarADTO(comisionGuardada);
+        } catch (Exception e) {
+            log.error("Error al crear la comisión de préstamo", e);
+            throw new CreateException("Comisión de Préstamo",
+                    "Error al crear la comisión de préstamo: " + e.getMessage());
+        }
+    }
+
     private PrestamoDTO transformarADTO(Prestamo prestamo) {
         return PrestamoDTO.builder()
                 .id(prestamo.getId())
@@ -254,6 +285,16 @@ public class PrestamoService {
                 .tipoAmortizacion(prestamo.getTipoAmortizacion())
                 .estado(prestamo.getEstado())
                 .version(prestamo.getVersion())
+                .build();
+    }
+
+    private ComisionesPrestamoDTO transformarADTO(ComisionesPrestamo comisionesPrestamo) {
+        return ComisionesPrestamoDTO.builder()
+                .id(comisionesPrestamo.getId())
+                .idTipoComision(comisionesPrestamo.getIdTipoComision().getId())
+                .idPrestamo(comisionesPrestamo.getIdPrestamo().getId())
+                .estado(comisionesPrestamo.getEstado())
+                .version(comisionesPrestamo.getVersion())
                 .build();
     }
 }

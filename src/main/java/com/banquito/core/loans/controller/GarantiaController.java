@@ -21,96 +21,66 @@ import java.util.List;
 @Slf4j
 public class GarantiaController {
 
-    private final GarantiaService garantiaService;
+        private final GarantiaService garantiaService;
 
-    public GarantiaController(GarantiaService garantiaService) {
-        this.garantiaService = garantiaService;
-    }
-
-    @Operation(summary = "Obtener todas las garantías")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Garantías encontradas", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay garantías", content = @Content)
-    })
-    @GetMapping
-    public ResponseEntity<List<GarantiaDTO>> obtenerTodas() {
-        log.info("Obteniendo todas las garantías");
-        List<GarantiaDTO> garantias = this.garantiaService.obtenerTodas();
-        if (garantias.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        public GarantiaController(GarantiaService garantiaService) {
+                this.garantiaService = garantiaService;
         }
-        return ResponseEntity.ok(garantias);
-    }
 
-    @Operation(summary = "Obtener garantías por estado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Garantías encontradas", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay garantías con ese estado", content = @Content)
-    })
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<GarantiaDTO>> obtenerPorEstado(
-            @Parameter(description = "Estado de la garantía") @PathVariable String estado) {
-        log.info("Obteniendo garantías por estado: {}", estado);
-        List<GarantiaDTO> garantias = this.garantiaService.obtenerPorEstado(estado);
-        if (garantias.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        @Operation(summary = "Obtener todas las garantías")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Garantías encontradas", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
+                        @ApiResponse(responseCode = "204", description = "No hay garantías", content = @Content)
+        })
+        @GetMapping
+        public ResponseEntity<List<GarantiaDTO>> obtenerTodas() {
+                log.info("Obteniendo todas las garantías");
+                List<GarantiaDTO> garantias = this.garantiaService.obtenerTodas();
+                if (garantias.isEmpty()) {
+                        return ResponseEntity.noContent().build();
+                }
+                return ResponseEntity.ok(garantias);
         }
-        return ResponseEntity.ok(garantias);
-    }
 
-    @Operation(summary = "Obtener garantía por ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Garantía encontrada", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content)
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<GarantiaDTO> obtenerPorId(
-            @Parameter(description = "ID de la garantía") @PathVariable Integer id) {
-        log.info("Obteniendo garantía por ID: {}", id);
-        return ResponseEntity.ok(this.garantiaService.obtenerPorId(id));
-    }
+        @Operation(summary = "Crear una nueva garantía")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Garantía creada", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Datos de la garantía inválidos", content = @Content)
+        })
+        @PostMapping
+        public ResponseEntity<GarantiaDTO> crear(
+                        @Parameter(description = "Garantía a crear") @RequestBody GarantiaDTO garantiaDTO) {
+                log.info("Creando nueva garantía: {}", garantiaDTO);
+                return ResponseEntity.ok(this.garantiaService.crear(garantiaDTO));
+        }
 
-    @Operation(summary = "Crear una nueva garantía")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Garantía creada", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
-            @ApiResponse(responseCode = "400", description = "Datos de la garantía inválidos", content = @Content)
-    })
-    @PostMapping
-    public ResponseEntity<GarantiaDTO> crear(
-            @Parameter(description = "Garantía a crear") @RequestBody GarantiaDTO garantiaDTO) {
-        log.info("Creando nueva garantía: {}", garantiaDTO);
-        return ResponseEntity.ok(this.garantiaService.crear(garantiaDTO));
-    }
+        @Operation(summary = "Actualizar una garantía existente")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Garantía actualizada", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
+                        @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content),
+                        @ApiResponse(responseCode = "400", description = "Datos de la garantía inválidos", content = @Content)
+        })
+        @PutMapping("/{id}")
+        public ResponseEntity<GarantiaDTO> actualizar(
+                        @Parameter(description = "ID de la garantía") @PathVariable Integer id,
+                        @Parameter(description = "Datos actualizados de la garantía") @RequestBody GarantiaDTO garantiaDTO) {
+                log.info("Actualizando garantía con ID: {} con datos: {}", id, garantiaDTO);
+                return ResponseEntity.ok(this.garantiaService.actualizar(id, garantiaDTO));
+        }
 
-    @Operation(summary = "Actualizar una garantía existente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Garantía actualizada", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Datos de la garantía inválidos", content = @Content)
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<GarantiaDTO> actualizar(
-            @Parameter(description = "ID de la garantía") @PathVariable Integer id,
-            @Parameter(description = "Datos actualizados de la garantía") @RequestBody GarantiaDTO garantiaDTO) {
-        log.info("Actualizando garantía con ID: {} con datos: {}", id, garantiaDTO);
-        return ResponseEntity.ok(this.garantiaService.actualizar(id, garantiaDTO));
-    }
-
-    @Operation(summary = "Eliminar una garantía")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Garantía eliminada", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content)
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(
-            @Parameter(description = "ID de la garantía") @PathVariable Integer id) {
-        log.info("Eliminando garantía con ID: {}", id);
-        this.garantiaService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
+        @Operation(summary = "Eliminar una garantía")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Garantía eliminada", content = @Content),
+                        @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content)
+        })
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> eliminar(
+                        @Parameter(description = "ID de la garantía") @PathVariable Integer id) {
+                log.info("Eliminando garantía con ID: {}", id);
+                this.garantiaService.eliminar(id);
+                return ResponseEntity.noContent().build();
+        }
 }

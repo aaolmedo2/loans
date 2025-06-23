@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SeguroRepository extends JpaRepository<Seguro, Integer> {
+public interface SeguroRepositorio extends JpaRepository<Seguro, Integer> {
     List<Seguro> findByTipoSeguro(String tipoSeguro);
 
     List<Seguro> findByEstado(String estado);

@@ -8,7 +8,7 @@ import com.banquito.core.loans.exception.CreateException;
 import com.banquito.core.loans.exception.EntityNotFoundException;
 import com.banquito.core.loans.exception.UpdateException;
 import com.banquito.core.loans.modelo.TiposComisione;
-import com.banquito.core.loans.repositorio.TiposComisioneRepository;
+import com.banquito.core.loans.repositorio.TiposComisioneRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,25 +20,15 @@ import java.util.Optional;
 @Slf4j
 public class TiposComisionService {
 
-    private final TiposComisioneRepository tipoComisionRepository;
+    private final TiposComisioneRepositorio tipoComisionRepository;
 
-    public TiposComisionService(TiposComisioneRepository tipoComisionRepository) {
+    public TiposComisionService(TiposComisioneRepositorio tipoComisionRepository) {
         this.tipoComisionRepository = tipoComisionRepository;
     }
 
     public List<TiposComisionDTO> obtenerTodos() {
         log.info("Obteniendo todos los tipos de comisión");
         List<TiposComisione> tiposComisiones = this.tipoComisionRepository.findAll();
-        List<TiposComisionDTO> tiposComisionesDTO = new ArrayList<>();
-        for (TiposComisione tipoComision : tiposComisiones) {
-            tiposComisionesDTO.add(this.transformarADTO(tipoComision));
-        }
-        return tiposComisionesDTO;
-    }
-
-    public List<TiposComisionDTO> obtenerPorEstado(String estado) {
-        log.info("Obteniendo tipos de comisiones por estado: {}", estado);
-        List<TiposComisione> tiposComisiones = this.tipoComisionRepository.findByEstado(estado);
         List<TiposComisionDTO> tiposComisionesDTO = new ArrayList<>();
         for (TiposComisione tipoComision : tiposComisiones) {
             tiposComisionesDTO.add(this.transformarADTO(tipoComision));

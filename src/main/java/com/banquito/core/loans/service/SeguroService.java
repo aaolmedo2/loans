@@ -7,7 +7,7 @@ import com.banquito.core.loans.exception.CreateException;
 import com.banquito.core.loans.exception.EntityNotFoundException;
 import com.banquito.core.loans.exception.UpdateException;
 import com.banquito.core.loans.modelo.Seguro;
-import com.banquito.core.loans.repositorio.SeguroRepository;
+import com.banquito.core.loans.repositorio.SeguroRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,25 +19,15 @@ import java.util.Optional;
 @Slf4j
 public class SeguroService {
 
-    private final SeguroRepository seguroRepository;
+    private final SeguroRepositorio seguroRepository;
 
-    public SeguroService(SeguroRepository seguroRepository) {
+    public SeguroService(SeguroRepositorio seguroRepository) {
         this.seguroRepository = seguroRepository;
     }
 
     public List<SeguroDTO> obtenerTodos() {
         log.info("Obteniendo todos los seguros");
         List<Seguro> seguros = this.seguroRepository.findAll();
-        List<SeguroDTO> segurosDTO = new ArrayList<>();
-        for (Seguro seguro : seguros) {
-            segurosDTO.add(this.transformarADTO(seguro));
-        }
-        return segurosDTO;
-    }
-
-    public List<SeguroDTO> obtenerPorEstado(String estado) {
-        log.info("Obteniendo seguros por estado: {}", estado);
-        List<Seguro> seguros = this.seguroRepository.findByEstado(estado);
         List<SeguroDTO> segurosDTO = new ArrayList<>();
         for (Seguro seguro : seguros) {
             segurosDTO.add(this.transformarADTO(seguro));

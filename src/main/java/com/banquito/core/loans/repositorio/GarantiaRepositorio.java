@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GarantiaRepository extends JpaRepository<Garantia, Integer> {
+public interface GarantiaRepositorio extends JpaRepository<Garantia, Integer> {
     List<Garantia> findByTipoGarantia(String tipoGarantia);
 
     List<Garantia> findByEstado(String estado);
