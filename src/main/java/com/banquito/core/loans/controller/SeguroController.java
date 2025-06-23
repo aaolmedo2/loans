@@ -1,6 +1,7 @@
 package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.SeguroDTO;
+import com.banquito.core.loans.DTO.MontoSeguroDTO;
 import com.banquito.core.loans.service.SeguroService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,18 +57,25 @@ public class SeguroController {
                 return ResponseEntity.ok(this.seguroService.crear(seguroDTO));
         }
 
-        @Operation(summary = "Actualizar un seguro existente")
+        @Operation(summary = "Actualizar el monto asegurado de un seguro existente")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Seguro actualizado", content = {
+                        @ApiResponse(responseCode = "200", description = "Monto asegurado actualizado", content = {
                                         @Content(mediaType = "application/json", schema = @Schema(implementation = SeguroDTO.class)) }),
                         @ApiResponse(responseCode = "404", description = "Seguro no encontrado", content = @Content),
-                        @ApiResponse(responseCode = "400", description = "Datos del seguro inválidos", content = @Content)
+                        @ApiResponse(responseCode = "400", description = "Monto asegurado inválido", content = @Content)
         })
         @PutMapping("/{id}")
         public ResponseEntity<SeguroDTO> actualizar(
                         @Parameter(description = "ID del seguro") @PathVariable Integer id,
-                        @Parameter(description = "Datos actualizados del seguro") @RequestBody SeguroDTO seguroDTO) {
-                log.info("Actualizando seguro con ID: {} con datos: {}", id, seguroDTO);
+                        @Parameter(description = "Nuevo monto asegurado") @RequestBody MontoSeguroDTO montoDTO) {
+                log.info("Actualizando monto asegurado del seguro con ID: {} con valor: {}", id,
+                                montoDTO.getMontoAsegurado());
+
+                // Crear un DTO con solo el monto asegurado para la actualización
+                SeguroDTO seguroDTO = SeguroDTO.builder()
+                                .montoAsegurado(montoDTO.getMontoAsegurado())
+                                .build();
+
                 return ResponseEntity.ok(this.seguroService.actualizar(id, seguroDTO));
         }
 

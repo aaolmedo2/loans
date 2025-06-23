@@ -11,6 +11,8 @@ import com.banquito.core.loans.repositorio.SeguroRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +28,9 @@ public class SeguroService {
     }
 
     public List<SeguroDTO> obtenerTodos() {
-        log.info("Obteniendo todos los seguros");
-        List<Seguro> seguros = this.seguroRepository.findAll();
+        log.info("Obteniendo todos los seguros (primeros 20, ordenados alfabéticamente por compañía)");
+        Pageable pageable = PageRequest.of(0, 20);
+        List<Seguro> seguros = this.seguroRepository.findAllByOrderByCompaniaAsc(pageable);
         List<SeguroDTO> segurosDTO = new ArrayList<>();
         for (Seguro seguro : seguros) {
             segurosDTO.add(this.transformarADTO(seguro));
@@ -81,35 +84,14 @@ public class SeguroService {
 
     @Transactional
     public SeguroDTO actualizar(Integer id, SeguroDTO seguroDTO) {
-        log.info("Actualizando seguro con ID: {} con datos: {}", id, seguroDTO);
+        log.info("Actualizando monto asegurado del seguro con ID: {} con valor: {}", id, seguroDTO.getMontoAsegurado());
         try {
             Optional<Seguro> seguroOpt = this.seguroRepository.findById(id);
             if (seguroOpt.isPresent()) {
                 Seguro seguro = seguroOpt.get();
 
-                // Validar que el tipo de seguro sea uno de los valores del enum
-                if (seguroDTO.getTipoSeguro() != null) {
-                    boolean tipoValido = false;
-                    for (TipoSeguroEnum tipoEnum : TipoSeguroEnum.values()) {
-                        if (tipoEnum.getValor().equals(seguroDTO.getTipoSeguro())) {
-                            tipoValido = true;
-                            break;
-                        }
-                    }
-                    if (!tipoValido) {
-                        throw new UpdateException("Seguro",
-                                "El tipo de seguro debe ser uno de los siguientes valores: VIDA, DESEMPLEO, PROTECCION_PAGOS, DESGRAVAMEN, INCENDIOS");
-                    }
-                }
-
-                seguro.setTipoSeguro(seguroDTO.getTipoSeguro());
-                seguro.setCompania(seguroDTO.getCompania());
+                // Solo permitimos actualizar el monto asegurado
                 seguro.setMontoAsegurado(seguroDTO.getMontoAsegurado());
-                seguro.setFechaInicio(seguroDTO.getFechaInicio());
-                seguro.setFechaFin(seguroDTO.getFechaFin());
-                if (seguroDTO.getEstado() != null) {
-                    seguro.setEstado(seguroDTO.getEstado());
-                }
 
                 Long newVersion = seguro.getVersion() + 1L;
                 seguro.setVersion(newVersion);

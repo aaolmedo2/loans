@@ -12,6 +12,8 @@ import com.banquito.core.loans.repositorio.TiposComisioneRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +29,9 @@ public class TiposComisionService {
     }
 
     public List<TiposComisionDTO> obtenerTodos() {
-        log.info("Obteniendo todos los tipos de comisión");
-        List<TiposComisione> tiposComisiones = this.tipoComisionRepository.findAll();
+        log.info("Obteniendo todos los tipos de comisión (primeros 20, ordenados alfabéticamente por nombre)");
+        Pageable pageable = PageRequest.of(0, 20);
+        List<TiposComisione> tiposComisiones = this.tipoComisionRepository.findAllByOrderByNombreAsc(pageable);
         List<TiposComisionDTO> tiposComisionesDTO = new ArrayList<>();
         for (TiposComisione tipoComision : tiposComisiones) {
             tiposComisionesDTO.add(this.transformarADTO(tipoComision));
@@ -95,50 +98,14 @@ public class TiposComisionService {
 
     @Transactional
     public TiposComisionDTO actualizar(Integer id, TiposComisionDTO tipoComisionDTO) {
-        log.info("Actualizando tipo de comisión con ID: {} con datos: {}", id, tipoComisionDTO);
+        log.info("Actualizando monto del tipo de comisión con ID: {} con valor: {}", id, tipoComisionDTO.getMonto());
         try {
             Optional<TiposComisione> tipoComisionOpt = this.tipoComisionRepository.findById(id);
             if (tipoComisionOpt.isPresent()) {
                 TiposComisione tipoComision = tipoComisionOpt.get();
 
-                // Validar que el tipo de comisión sea uno de los valores del enum
-                if (tipoComisionDTO.getTipo() != null) {
-                    boolean tipoValido = false;
-                    for (TipoComisionEnum tipoEnum : TipoComisionEnum.values()) {
-                        if (tipoEnum.getValor().equals(tipoComisionDTO.getTipo())) {
-                            tipoValido = true;
-                            break;
-                        }
-                    }
-                    if (!tipoValido) {
-                        throw new UpdateException("Tipo de Comisión",
-                                "El tipo de comisión debe ser uno de los siguientes valores: ORIGINACION, PAGO ATRASADO, PREPAGO, MODIFICACION, SERVICIO ADICIONAL");
-                    }
-                }
-
-                // Validar que el tipo de cálculo sea uno de los valores del enum
-                if (tipoComisionDTO.getTipoCalculo() != null) {
-                    boolean tipoCalculoValido = false;
-                    for (TipoCalculoComisionEnum tipoCalculoEnum : TipoCalculoComisionEnum.values()) {
-                        if (tipoCalculoEnum.getValor().equals(tipoComisionDTO.getTipoCalculo())) {
-                            tipoCalculoValido = true;
-                            break;
-                        }
-                    }
-                    if (!tipoCalculoValido) {
-                        throw new UpdateException("Tipo de Comisión",
-                                "El tipo de cálculo debe ser uno de los siguientes valores: PORCENTAJE, FIJO");
-                    }
-                }
-
-                tipoComision.setTipo(tipoComisionDTO.getTipo());
-                tipoComision.setNombre(tipoComisionDTO.getNombre());
-                tipoComision.setDescripcion(tipoComisionDTO.getDescripcion());
-                tipoComision.setTipoCalculo(tipoComisionDTO.getTipoCalculo());
+                // Solo permitimos actualizar el monto
                 tipoComision.setMonto(tipoComisionDTO.getMonto());
-                if (tipoComisionDTO.getEstado() != null) {
-                    tipoComision.setEstado(tipoComisionDTO.getEstado());
-                }
 
                 Long newVersion = tipoComision.getVersion() + 1L;
                 tipoComision.setVersion(newVersion);

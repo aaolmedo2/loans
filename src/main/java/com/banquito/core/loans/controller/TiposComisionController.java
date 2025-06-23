@@ -1,6 +1,7 @@
 package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.TiposComisionDTO;
+import com.banquito.core.loans.DTO.MontoDTO;
 import com.banquito.core.loans.service.TiposComisionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,18 +57,24 @@ public class TiposComisionController {
                 return ResponseEntity.ok(this.tiposComisionService.crear(tipoComisionDTO));
         }
 
-        @Operation(summary = "Actualizar un tipo de comisión existente")
+        @Operation(summary = "Actualizar el monto de un tipo de comisión existente")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Tipo de comisión actualizado", content = {
+                        @ApiResponse(responseCode = "200", description = "Monto del tipo de comisión actualizado", content = {
                                         @Content(mediaType = "application/json", schema = @Schema(implementation = TiposComisionDTO.class)) }),
                         @ApiResponse(responseCode = "404", description = "Tipo de comisión no encontrado", content = @Content),
-                        @ApiResponse(responseCode = "400", description = "Datos del tipo de comisión inválidos", content = @Content)
+                        @ApiResponse(responseCode = "400", description = "Monto inválido", content = @Content)
         })
         @PutMapping("/{id}")
         public ResponseEntity<TiposComisionDTO> actualizar(
                         @Parameter(description = "ID del tipo de comisión") @PathVariable Integer id,
-                        @Parameter(description = "Datos actualizados del tipo de comisión") @RequestBody TiposComisionDTO tipoComisionDTO) {
-                log.info("Actualizando tipo de comisión con ID: {} con datos: {}", id, tipoComisionDTO);
+                        @Parameter(description = "Nuevo monto del tipo de comisión") @RequestBody MontoDTO montoDTO) {
+                log.info("Actualizando monto del tipo de comisión con ID: {} con valor: {}", id, montoDTO.getMonto());
+
+                // Crear un DTO con solo el monto para la actualización
+                TiposComisionDTO tipoComisionDTO = TiposComisionDTO.builder()
+                                .monto(montoDTO.getMonto())
+                                .build();
+
                 return ResponseEntity.ok(this.tiposComisionService.actualizar(id, tipoComisionDTO));
         }
 

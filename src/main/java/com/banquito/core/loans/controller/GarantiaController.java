@@ -1,6 +1,7 @@
 package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.GarantiaDTO;
+import com.banquito.core.loans.DTO.MontoDTO;
 import com.banquito.core.loans.service.GarantiaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -56,18 +57,24 @@ public class GarantiaController {
                 return ResponseEntity.ok(this.garantiaService.crear(garantiaDTO));
         }
 
-        @Operation(summary = "Actualizar una garantía existente")
+        @Operation(summary = "Actualizar el valor de una garantía existente")
         @ApiResponses(value = {
-                        @ApiResponse(responseCode = "200", description = "Garantía actualizada", content = {
+                        @ApiResponse(responseCode = "200", description = "Valor de la garantía actualizado", content = {
                                         @Content(mediaType = "application/json", schema = @Schema(implementation = GarantiaDTO.class)) }),
                         @ApiResponse(responseCode = "404", description = "Garantía no encontrada", content = @Content),
-                        @ApiResponse(responseCode = "400", description = "Datos de la garantía inválidos", content = @Content)
+                        @ApiResponse(responseCode = "400", description = "Monto inválido", content = @Content)
         })
         @PutMapping("/{id}")
         public ResponseEntity<GarantiaDTO> actualizar(
                         @Parameter(description = "ID de la garantía") @PathVariable Integer id,
-                        @Parameter(description = "Datos actualizados de la garantía") @RequestBody GarantiaDTO garantiaDTO) {
-                log.info("Actualizando garantía con ID: {} con datos: {}", id, garantiaDTO);
+                        @Parameter(description = "Nuevo valor de la garantía") @RequestBody MontoDTO montoDTO) {
+                log.info("Actualizando valor de la garantía con ID: {} con valor: {}", id, montoDTO.getMonto());
+
+                // Crear un DTO con solo el valor para la actualización
+                GarantiaDTO garantiaDTO = GarantiaDTO.builder()
+                                .valor(montoDTO.getMonto())
+                                .build();
+
                 return ResponseEntity.ok(this.garantiaService.actualizar(id, garantiaDTO));
         }
 

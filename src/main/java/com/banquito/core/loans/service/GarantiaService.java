@@ -11,6 +11,8 @@ import com.banquito.core.loans.repositorio.GarantiaRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +28,9 @@ public class GarantiaService {
     }
 
     public List<GarantiaDTO> obtenerTodas() {
-        log.info("Obteniendo todas las garantías");
-        List<Garantia> garantias = this.garantiaRepository.findAll();
+        log.info("Obteniendo todas las garantías (primeras 20, ordenadas alfabéticamente)");
+        Pageable pageable = PageRequest.of(0, 20);
+        List<Garantia> garantias = this.garantiaRepository.findAllByOrderByDescripcionAsc(pageable);
         List<GarantiaDTO> garantiasDTO = new ArrayList<>();
         for (Garantia garantia : garantias) {
             garantiasDTO.add(this.transformarADTO(garantia));
@@ -79,33 +82,14 @@ public class GarantiaService {
 
     @Transactional
     public GarantiaDTO actualizar(Integer id, GarantiaDTO garantiaDTO) {
-        log.info("Actualizando garantía con ID: {} con datos: {}", id, garantiaDTO);
+        log.info("Actualizando monto de garantía con ID: {} con valor: {}", id, garantiaDTO.getValor());
         try {
             Optional<Garantia> garantiaOpt = this.garantiaRepository.findById(id);
             if (garantiaOpt.isPresent()) {
                 Garantia garantia = garantiaOpt.get();
 
-                // Validar que el tipo de garantía sea uno de los valores del enum
-                if (garantiaDTO.getTipoGarantia() != null) {
-                    boolean tipoValido = false;
-                    for (TipoGarantiaEnum tipoEnum : TipoGarantiaEnum.values()) {
-                        if (tipoEnum.getValor().equals(garantiaDTO.getTipoGarantia())) {
-                            tipoValido = true;
-                            break;
-                        }
-                    }
-                    if (!tipoValido) {
-                        throw new UpdateException("Garantía",
-                                "El tipo de garantía debe ser uno de los siguientes valores: HIPOTECA, PRENDARIA, PERSONAL");
-                    }
-                }
-
-                garantia.setTipoGarantia(garantiaDTO.getTipoGarantia());
-                garantia.setDescripcion(garantiaDTO.getDescripcion());
+                // Solo permitimos actualizar el valor de la garantía
                 garantia.setValor(garantiaDTO.getValor());
-                if (garantiaDTO.getEstado() != null) {
-                    garantia.setEstado(garantiaDTO.getEstado());
-                }
 
                 Long newVersion = garantia.getVersion() + 1L;
                 garantia.setVersion(newVersion);
