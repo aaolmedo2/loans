@@ -1,6 +1,7 @@
 package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.PrestamosClienteDTO;
+import com.banquito.core.loans.DTO.PrestamosClienteExpandidoDTO;
 import com.banquito.core.loans.service.PrestamosClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,17 +31,30 @@ public class PrestamosClienteController {
         @Operation(summary = "Obtener todos los préstamos de clientes")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Préstamos de clientes encontrados", content = {
-                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteExpandidoDTO.class)) }),
                         @ApiResponse(responseCode = "204", description = "No hay préstamos de clientes", content = @Content)
         })
         @GetMapping
-        public ResponseEntity<List<PrestamosClienteDTO>> obtenerTodos() {
+        public ResponseEntity<List<PrestamosClienteExpandidoDTO>> obtenerTodos() {
                 log.info("Obteniendo todos los préstamos de clientes");
-                List<PrestamosClienteDTO> prestamosClientes = this.prestamosClienteService.obtenerTodos();
+                List<PrestamosClienteExpandidoDTO> prestamosClientes = this.prestamosClienteService.obtenerTodos();
                 if (prestamosClientes.isEmpty()) {
                         return ResponseEntity.noContent().build();
                 }
                 return ResponseEntity.ok(prestamosClientes);
+        }
+
+        @Operation(summary = "Obtener préstamo de cliente por ID")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Préstamo de cliente encontrado", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteExpandidoDTO.class)) }),
+                        @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content)
+        })
+        @GetMapping("/{id}")
+        public ResponseEntity<PrestamosClienteExpandidoDTO> obtenerPorId(
+                        @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id) {
+                log.info("Obteniendo préstamo de cliente por ID: {}", id);
+                return ResponseEntity.ok(this.prestamosClienteService.obtenerPorId(id));
         }
 
         @Operation(summary = "Crear un nuevo préstamo de cliente")

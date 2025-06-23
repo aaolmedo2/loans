@@ -2,6 +2,7 @@ package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.ComisionesPrestamoDTO;
 import com.banquito.core.loans.DTO.PrestamoDTO;
+import com.banquito.core.loans.DTO.PrestamoExpandidoDTO;
 import com.banquito.core.loans.service.PrestamoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,13 +32,13 @@ public class PrestamoController {
         @Operation(summary = "Obtener todos los préstamos")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Préstamos encontrados", content = {
-                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoDTO.class)) }),
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoExpandidoDTO.class)) }),
                         @ApiResponse(responseCode = "204", description = "No hay préstamos", content = @Content)
         })
         @GetMapping
-        public ResponseEntity<List<PrestamoDTO>> obtenerTodos() {
+        public ResponseEntity<List<PrestamoExpandidoDTO>> obtenerTodos() {
                 log.info("Obteniendo todos los préstamos");
-                List<PrestamoDTO> prestamos = this.prestamoService.obtenerTodos();
+                List<PrestamoExpandidoDTO> prestamos = this.prestamoService.obtenerTodos();
                 if (prestamos.isEmpty()) {
                         return ResponseEntity.noContent().build();
                 }
@@ -47,14 +48,14 @@ public class PrestamoController {
         @Operation(summary = "Obtener préstamos por tipo de préstamo")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Préstamos encontrados", content = {
-                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoDTO.class)) }),
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoExpandidoDTO.class)) }),
                         @ApiResponse(responseCode = "204", description = "No hay préstamos con ese tipo de préstamo", content = @Content)
         })
         @GetMapping("/tipo-prestamo/{idTipoPrestamo}")
-        public ResponseEntity<List<PrestamoDTO>> obtenerPorTipoPrestamo(
+        public ResponseEntity<List<PrestamoExpandidoDTO>> obtenerPorTipoPrestamo(
                         @Parameter(description = "ID del tipo de préstamo") @PathVariable Integer idTipoPrestamo) {
                 log.info("Obteniendo préstamos por tipo de préstamo con ID: {}", idTipoPrestamo);
-                List<PrestamoDTO> prestamos = this.prestamoService.obtenerPorTipoPrestamo(idTipoPrestamo);
+                List<PrestamoExpandidoDTO> prestamos = this.prestamoService.obtenerPorTipoPrestamo(idTipoPrestamo);
                 if (prestamos.isEmpty()) {
                         return ResponseEntity.noContent().build();
                 }
@@ -64,11 +65,11 @@ public class PrestamoController {
         @Operation(summary = "Obtener préstamo por ID")
         @ApiResponses(value = {
                         @ApiResponse(responseCode = "200", description = "Préstamo encontrado", content = {
-                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoDTO.class)) }),
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamoExpandidoDTO.class)) }),
                         @ApiResponse(responseCode = "404", description = "Préstamo no encontrado", content = @Content)
         })
         @GetMapping("/{id}")
-        public ResponseEntity<PrestamoDTO> obtenerPorId(
+        public ResponseEntity<PrestamoExpandidoDTO> obtenerPorId(
                         @Parameter(description = "ID del préstamo") @PathVariable Integer id) {
                 log.info("Obteniendo préstamo por ID: {}", id);
                 return ResponseEntity.ok(this.prestamoService.obtenerPorId(id));

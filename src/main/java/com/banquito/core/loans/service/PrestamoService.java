@@ -2,6 +2,8 @@ package com.banquito.core.loans.service;
 
 import com.banquito.core.loans.DTO.ComisionesPrestamoDTO;
 import com.banquito.core.loans.DTO.PrestamoDTO;
+import com.banquito.core.loans.DTO.PrestamoExpandidoDTO;
+import com.banquito.core.loans.DTO.TiposPrestamoDTO;
 import com.banquito.core.loans.enums.BaseCalculoEnum;
 import com.banquito.core.loans.enums.EsquemaAmortizacionEnum;
 import com.banquito.core.loans.enums.EstadoGeneralEnum;
@@ -44,31 +46,31 @@ public class PrestamoService {
         this.tiposPrestamoRepository = tiposPrestamoRepository;
     }
 
-    public List<PrestamoDTO> obtenerTodos() {
-        log.info("Obteniendo todos los préstamos");
+    public List<PrestamoExpandidoDTO> obtenerTodos() {
+        log.info("Obteniendo todos los préstamos con información expandida");
         List<Prestamo> prestamos = this.prestamoRepository.findAll();
-        List<PrestamoDTO> prestamosDTO = new ArrayList<>();
+        List<PrestamoExpandidoDTO> prestamosDTO = new ArrayList<>();
         for (Prestamo prestamo : prestamos) {
-            prestamosDTO.add(this.transformarADTO(prestamo));
+            prestamosDTO.add(this.transformarADTOExpandido(prestamo));
         }
         return prestamosDTO;
     }
 
-    public List<PrestamoDTO> obtenerPorTipoPrestamo(Integer idTipoPrestamo) {
-        log.info("Obteniendo préstamos por tipo de préstamo con ID: {}", idTipoPrestamo);
+    public List<PrestamoExpandidoDTO> obtenerPorTipoPrestamo(Integer idTipoPrestamo) {
+        log.info("Obteniendo préstamos por tipo de préstamo con ID: {} con información expandida", idTipoPrestamo);
         List<Prestamo> prestamos = this.prestamoRepository.findByIdTipoPrestamo_Id(idTipoPrestamo);
-        List<PrestamoDTO> prestamosDTO = new ArrayList<>();
+        List<PrestamoExpandidoDTO> prestamosDTO = new ArrayList<>();
         for (Prestamo prestamo : prestamos) {
-            prestamosDTO.add(this.transformarADTO(prestamo));
+            prestamosDTO.add(this.transformarADTOExpandido(prestamo));
         }
         return prestamosDTO;
     }
 
-    public PrestamoDTO obtenerPorId(Integer id) {
-        log.info("Obteniendo préstamo por ID: {}", id);
+    public PrestamoExpandidoDTO obtenerPorId(Integer id) {
+        log.info("Obteniendo préstamo por ID: {} con información expandida", id);
         Optional<Prestamo> prestamoOpt = this.prestamoRepository.findById(id);
         if (prestamoOpt.isPresent()) {
-            return this.transformarADTO(prestamoOpt.get());
+            return this.transformarADTOExpandido(prestamoOpt.get());
         } else {
             throw new EntityNotFoundException("Préstamo", "No se encontró el préstamo con id: " + id);
         }
@@ -295,6 +297,43 @@ public class PrestamoService {
                 .idPrestamo(comisionesPrestamo.getIdPrestamo().getId())
                 .estado(comisionesPrestamo.getEstado())
                 .version(comisionesPrestamo.getVersion())
+                .build();
+    }
+
+    private PrestamoExpandidoDTO transformarADTOExpandido(Prestamo prestamo) {
+        TiposPrestamo tipoPrestamo = prestamo.getIdTipoPrestamo();
+
+        // Crear el DTO para TiposPrestamo
+        TiposPrestamoDTO tiposPrestamoDTO = TiposPrestamoDTO.builder()
+                .id(tipoPrestamo.getId())
+                .idMoneda(tipoPrestamo.getIdMoneda())
+                .nombre(tipoPrestamo.getNombre())
+                .descripcion(tipoPrestamo.getDescripcion())
+                .requisitos(tipoPrestamo.getRequisitos())
+                .tipoCliente(tipoPrestamo.getTipoCliente())
+                .fechaCreacion(tipoPrestamo.getFechaCreacion())
+                .fechaModificacion(tipoPrestamo.getFechaModificacion())
+                .estado(tipoPrestamo.getEstado())
+                .version(tipoPrestamo.getVersion())
+                .build();
+
+        // Crear el DTO expandido para Prestamo
+        return PrestamoExpandidoDTO.builder()
+                .id(prestamo.getId())
+                .tipoPrestamo(tiposPrestamoDTO)
+                .idMoneda(prestamo.getIdMoneda())
+                .nombre(prestamo.getNombre())
+                .descripcion(prestamo.getDescripcion())
+                .fechaModificacion(prestamo.getFechaModificacion())
+                .baseCalculo(prestamo.getBaseCalculo())
+                .tasaInteres(prestamo.getTasaInteres())
+                .montoMinimo(prestamo.getMontoMinimo())
+                .montoMaximo(prestamo.getMontoMaximo())
+                .plazoMinimoMeses(prestamo.getPlazoMinimoMeses())
+                .plazoMaximoMeses(prestamo.getPlazoMaximoMeses())
+                .tipoAmortizacion(prestamo.getTipoAmortizacion())
+                .estado(prestamo.getEstado())
+                .version(prestamo.getVersion())
                 .build();
     }
 }
