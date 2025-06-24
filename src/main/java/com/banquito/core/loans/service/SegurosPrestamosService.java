@@ -11,11 +11,11 @@ import com.banquito.core.loans.modelo.Seguro;
 import com.banquito.core.loans.modelo.SegurosPrestamo;
 import com.banquito.core.loans.modelo.SegurosPrestamoCliente;
 import com.banquito.core.loans.modelo.Prestamo;
-import com.banquito.core.loans.repositorio.PrestamosClienteRepository;
-import com.banquito.core.loans.repositorio.SeguroRepository;
+import com.banquito.core.loans.repositorio.PrestamosClienteRepositorio;
+import com.banquito.core.loans.repositorio.SeguroRepositorio;
 import com.banquito.core.loans.repositorio.SegurosPrestamoRepositorio;
 import com.banquito.core.loans.repositorio.SegurosPrestamoClienteRepositorio;
-import com.banquito.core.loans.repositorio.PrestamoRepository;
+import com.banquito.core.loans.repositorio.PrestamoRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +28,16 @@ import java.util.Optional;
 public class SegurosPrestamosService {
     private final SegurosPrestamoRepositorio segurosPrestamoRepositorio;
     private final SegurosPrestamoClienteRepositorio segurosPrestamoClienteRepositorio;
-    private final SeguroRepository seguroRepository;
-    private final PrestamoRepository prestamoRepository;
-    private final PrestamosClienteRepository prestamosClienteRepository;
+    private final SeguroRepositorio seguroRepository;
+    private final PrestamoRepositorio prestamoRepository;
+    private final PrestamosClienteRepositorio prestamosClienteRepository;
 
     public SegurosPrestamosService(
             SegurosPrestamoRepositorio segurosPrestamoRepositorio,
             SegurosPrestamoClienteRepositorio segurosPrestamoClienteRepositorio,
-            SeguroRepository seguroRepository,
-            PrestamoRepository prestamoRepository,
-            PrestamosClienteRepository prestamosClienteRepository) {
+            SeguroRepositorio seguroRepository,
+            PrestamoRepositorio prestamoRepository,
+            PrestamosClienteRepositorio prestamosClienteRepository) {
         this.segurosPrestamoRepositorio = segurosPrestamoRepositorio;
         this.segurosPrestamoClienteRepositorio = segurosPrestamoClienteRepositorio;
         this.seguroRepository = seguroRepository;

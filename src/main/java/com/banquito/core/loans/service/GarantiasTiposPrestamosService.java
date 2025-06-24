@@ -11,11 +11,11 @@ import com.banquito.core.loans.modelo.GarantiasTiposPrestamo;
 import com.banquito.core.loans.modelo.GarantiasTiposPrestamosCliente;
 import com.banquito.core.loans.modelo.PrestamosCliente;
 import com.banquito.core.loans.modelo.TiposPrestamo;
-import com.banquito.core.loans.repositorio.GarantiaRepository;
+import com.banquito.core.loans.repositorio.GarantiaRepositorio;
 import com.banquito.core.loans.repositorio.GarantiasTiposPrestamoRepositorio;
 import com.banquito.core.loans.repositorio.GarantiasTiposPrestamosClienteRepositorio;
-import com.banquito.core.loans.repositorio.PrestamosClienteRepository;
-import com.banquito.core.loans.repositorio.TiposPrestamoRepository;
+import com.banquito.core.loans.repositorio.PrestamosClienteRepositorio;
+import com.banquito.core.loans.repositorio.TiposPrestamoRepositorio;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,16 +28,16 @@ import java.util.Optional;
 public class GarantiasTiposPrestamosService {
     private final GarantiasTiposPrestamoRepositorio garantiasTiposPrestamoRepositorio;
     private final GarantiasTiposPrestamosClienteRepositorio garantiasTiposPrestamosClienteRepositorio;
-    private final GarantiaRepository garantiaRepository;
-    private final TiposPrestamoRepository tiposPrestamoRepository;
-    private final PrestamosClienteRepository prestamosClienteRepository;
+    private final GarantiaRepositorio garantiaRepository;
+    private final TiposPrestamoRepositorio tiposPrestamoRepository;
+    private final PrestamosClienteRepositorio prestamosClienteRepository;
 
     public GarantiasTiposPrestamosService(
             GarantiasTiposPrestamoRepositorio garantiasTiposPrestamoRepositorio,
             GarantiasTiposPrestamosClienteRepositorio garantiasTiposPrestamosClienteRepositorio,
-            GarantiaRepository garantiaRepository,
-            TiposPrestamoRepository tiposPrestamoRepository,
-            PrestamosClienteRepository prestamosClienteRepository) {
+            GarantiaRepositorio garantiaRepository,
+            TiposPrestamoRepositorio tiposPrestamoRepository,
+            PrestamosClienteRepositorio prestamosClienteRepository) {
         this.garantiasTiposPrestamoRepositorio = garantiasTiposPrestamoRepositorio;
         this.garantiasTiposPrestamosClienteRepositorio = garantiasTiposPrestamosClienteRepositorio;
         this.garantiaRepository = garantiaRepository;
