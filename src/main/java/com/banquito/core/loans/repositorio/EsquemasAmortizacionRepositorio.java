@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EsquemasAmortizacionRepository extends JpaRepository<EsquemasAmortizacion, Integer> {
+public interface EsquemasAmortizacionRepositorio extends JpaRepository<EsquemasAmortizacion, Integer> {
     Optional<EsquemasAmortizacion> findByNombre(String nombre);
 
     List<EsquemasAmortizacion> findByEstado(String estado);

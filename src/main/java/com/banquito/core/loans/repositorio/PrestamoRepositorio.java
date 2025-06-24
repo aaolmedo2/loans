@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface PrestamoRepository extends JpaRepository<Prestamo, Integer> {
+public interface PrestamoRepositorio extends JpaRepository<Prestamo, Integer> {
     List<Prestamo> findByNombreContainingIgnoreCase(String nombre);
 
     List<Prestamo> findByEstado(String estado);

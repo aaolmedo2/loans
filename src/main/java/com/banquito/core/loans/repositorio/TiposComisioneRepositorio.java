@@ -5,12 +5,17 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @Repository
-public interface TiposComisioneRepository extends JpaRepository<TiposComisione, Integer> {
+public interface TiposComisioneRepositorio extends JpaRepository<TiposComisione, Integer> {
     List<TiposComisione> findByTipo(String tipo);
 
     List<TiposComisione> findByEstado(String estado);
 
     List<TiposComisione> findByNombreContainingIgnoreCase(String nombre);
+
+    List<TiposComisione> findAllByOrderByNombreAsc(Pageable pageable);
+
+    List<TiposComisione> findByEstadoOrderByNombreAsc(String estado, Pageable pageable);
 }

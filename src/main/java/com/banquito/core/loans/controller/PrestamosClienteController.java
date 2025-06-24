@@ -1,6 +1,7 @@
 package com.banquito.core.loans.controller;
 
 import com.banquito.core.loans.DTO.PrestamosClienteDTO;
+import com.banquito.core.loans.DTO.PrestamosClienteExpandidoDTO;
 import com.banquito.core.loans.service.PrestamosClienteService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,96 +22,64 @@ import java.util.List;
 @Slf4j
 public class PrestamosClienteController {
 
-    private final PrestamosClienteService prestamosClienteService;
+        private final PrestamosClienteService prestamosClienteService;
 
-    public PrestamosClienteController(PrestamosClienteService prestamosClienteService) {
-        this.prestamosClienteService = prestamosClienteService;
-    }
-
-    @Operation(summary = "Obtener todos los préstamos de clientes")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Préstamos de clientes encontrados", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay préstamos de clientes", content = @Content)
-    })
-    @GetMapping
-    public ResponseEntity<List<PrestamosClienteDTO>> obtenerTodos() {
-        log.info("Obteniendo todos los préstamos de clientes");
-        List<PrestamosClienteDTO> prestamosClientes = this.prestamosClienteService.obtenerTodos();
-        if (prestamosClientes.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        public PrestamosClienteController(PrestamosClienteService prestamosClienteService) {
+                this.prestamosClienteService = prestamosClienteService;
         }
-        return ResponseEntity.ok(prestamosClientes);
-    }
 
-    @Operation(summary = "Obtener préstamos de clientes por estado")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Préstamos de clientes encontrados", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
-            @ApiResponse(responseCode = "204", description = "No hay préstamos de clientes con ese estado", content = @Content)
-    })
-    @GetMapping("/estado/{estado}")
-    public ResponseEntity<List<PrestamosClienteDTO>> obtenerPorEstado(
-            @Parameter(description = "Estado del préstamo de cliente") @PathVariable String estado) {
-        log.info("Obteniendo préstamos de clientes por estado: {}", estado);
-        List<PrestamosClienteDTO> prestamosClientes = this.prestamosClienteService.obtenerPorEstado(estado);
-        if (prestamosClientes.isEmpty()) {
-            return ResponseEntity.noContent().build();
+        @Operation(summary = "Obtener todos los préstamos de clientes")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Préstamos de clientes encontrados", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteExpandidoDTO.class)) }),
+                        @ApiResponse(responseCode = "204", description = "No hay préstamos de clientes", content = @Content)
+        })
+        @GetMapping
+        public ResponseEntity<List<PrestamosClienteExpandidoDTO>> obtenerTodos() {
+                log.info("Obteniendo todos los préstamos de clientes");
+                List<PrestamosClienteExpandidoDTO> prestamosClientes = this.prestamosClienteService.obtenerTodos();
+                if (prestamosClientes.isEmpty()) {
+                        return ResponseEntity.noContent().build();
+                }
+                return ResponseEntity.ok(prestamosClientes);
         }
-        return ResponseEntity.ok(prestamosClientes);
-    }
 
-    @Operation(summary = "Obtener préstamo de cliente por ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Préstamo de cliente encontrado", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content)
-    })
-    @GetMapping("/{id}")
-    public ResponseEntity<PrestamosClienteDTO> obtenerPorId(
-            @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id) {
-        log.info("Obteniendo préstamo de cliente por ID: {}", id);
-        return ResponseEntity.ok(this.prestamosClienteService.obtenerPorId(id));
-    }
+        @Operation(summary = "Obtener préstamo de cliente por ID")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Préstamo de cliente encontrado", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteExpandidoDTO.class)) }),
+                        @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content)
+        })
+        @GetMapping("/{id}")
+        public ResponseEntity<PrestamosClienteExpandidoDTO> obtenerPorId(
+                        @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id) {
+                log.info("Obteniendo préstamo de cliente por ID: {}", id);
+                return ResponseEntity.ok(this.prestamosClienteService.obtenerPorId(id));
+        }
 
-    @Operation(summary = "Crear un nuevo préstamo de cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Préstamo de cliente creado", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
-            @ApiResponse(responseCode = "400", description = "Datos del préstamo de cliente inválidos", content = @Content)
-    })
-    @PostMapping
-    public ResponseEntity<PrestamosClienteDTO> crear(
-            @Parameter(description = "Préstamo de cliente a crear") @RequestBody PrestamosClienteDTO prestamoClienteDTO) {
-        log.info("Creando nuevo préstamo de cliente: {}", prestamoClienteDTO);
-        return ResponseEntity.ok(this.prestamosClienteService.crear(prestamoClienteDTO));
-    }
+        @Operation(summary = "Crear un nuevo préstamo de cliente")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "200", description = "Préstamo de cliente creado", content = {
+                                        @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
+                        @ApiResponse(responseCode = "400", description = "Datos del préstamo de cliente inválidos", content = @Content)
+        })
+        @PostMapping
+        public ResponseEntity<PrestamosClienteDTO> crear(
+                        @Parameter(description = "Préstamo de cliente a crear") @RequestBody PrestamosClienteDTO prestamoClienteDTO) {
+                log.info("Creando nuevo préstamo de cliente: {}", prestamoClienteDTO);
+                return ResponseEntity.ok(this.prestamosClienteService.crear(prestamoClienteDTO));
+        }
 
-    @Operation(summary = "Actualizar un préstamo de cliente existente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Préstamo de cliente actualizado", content = {
-                    @Content(mediaType = "application/json", schema = @Schema(implementation = PrestamosClienteDTO.class)) }),
-            @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Datos del préstamo de cliente inválidos", content = @Content)
-    })
-    @PutMapping("/{id}")
-    public ResponseEntity<PrestamosClienteDTO> actualizar(
-            @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id,
-            @Parameter(description = "Datos actualizados del préstamo de cliente") @RequestBody PrestamosClienteDTO prestamoClienteDTO) {
-        log.info("Actualizando préstamo de cliente con ID: {} con datos: {}", id, prestamoClienteDTO);
-        return ResponseEntity.ok(this.prestamosClienteService.actualizar(id, prestamoClienteDTO));
-    }
-
-    @Operation(summary = "Eliminar un préstamo de cliente")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Préstamo de cliente eliminado", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content)
-    })
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(
-            @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id) {
-        log.info("Eliminando préstamo de cliente con ID: {}", id);
-        this.prestamosClienteService.eliminar(id);
-        return ResponseEntity.noContent().build();
-    }
+        @Operation(summary = "Eliminar un préstamo de cliente")
+        @ApiResponses(value = {
+                        @ApiResponse(responseCode = "204", description = "Préstamo de cliente eliminado", content = @Content),
+                        @ApiResponse(responseCode = "404", description = "Préstamo de cliente no encontrado", content = @Content)
+        })
+        @DeleteMapping("/{id}")
+        public ResponseEntity<Void> eliminar(
+                        @Parameter(description = "ID del préstamo de cliente") @PathVariable Integer id) {
+                log.info("Eliminando préstamo de cliente con ID: {}", id);
+                this.prestamosClienteService.eliminar(id);
+                return ResponseEntity.noContent().build();
+        }
 }
